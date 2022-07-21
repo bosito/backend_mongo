@@ -82,9 +82,18 @@ const loginUsuario = async (req = request, res = response) => {
     };
 };
 
-const renovarToken = (req = request, res = response) => {
+const renovarToken = async (req = request, res = response) => {
 
-    res.json({ wolas: 'renovar token' })
+    const { user_id, name } = req;
+
+    const token = await generarJWT(user_id, name);
+
+    res.status(201).json({
+        ok: true,
+        user_id: user_id,
+        name: name,
+        token: token
+    });
 };
 
 

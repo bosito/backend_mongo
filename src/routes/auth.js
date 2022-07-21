@@ -10,7 +10,8 @@ const {
     loginUsuario,
     renovarToken
 } = require('../controller/auth');
-const { validarCampos } = require('../middlewares/valudar-campos')
+const { validarCampos } = require('../middlewares/valudar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 const auth = Router();
 
@@ -35,6 +36,9 @@ auth.post('/login',
 
 auth.get(
     '/renew',
+    [
+        validarJWT
+    ],
     renovarToken
 );
 
