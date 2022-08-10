@@ -5,7 +5,10 @@ const { generarJWT } = require('../helpers/jwt');
 
 const createUser = async (req = request, res = response) => {
     try {
-        const { email, password } = req.body;
+        const { 
+            email, 
+            password, 
+        } = req.body;
 
         let user = await User.findOne({ email });
 
@@ -96,9 +99,8 @@ const renovarToken = async (req = request, res = response) => {
     });
 };
 
-
 module.exports = {
     createUser,
     loginUsuario,
     renovarToken
-}
+};

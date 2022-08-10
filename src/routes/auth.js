@@ -32,7 +32,8 @@ auth.post('/login',
         check("password", "El password es obligatorio y mayor a 6 caracteres").isLength({ min: 6 }),
         validarCampos
     ],
-    loginUsuario);
+    loginUsuario
+);
 
 auth.get(
     '/renew',
