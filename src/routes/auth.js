@@ -8,7 +8,8 @@ const { check } = require('express-validator')
 const {
     createUser,
     loginUsuario,
-    renovarToken
+    renovarToken,
+    validateConection
 } = require('../controller/auth');
 const { validarCampos } = require('../middlewares/valudar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -42,5 +43,11 @@ auth.get(
     ],
     renovarToken
 );
+
+
+auth.get(
+    '/test',
+    validateConection
+)
 
 module.exports = auth;

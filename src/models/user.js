@@ -14,10 +14,14 @@ const user_schema = Schema({
         type: String,
         require: true
     },
+    user_image: {
+        type: String,
+        default: ''
+    },
     type_user: {
         type: Number,
         default: 0
-    }
+    },
 });
 
 module.exports = model('user', user_schema);

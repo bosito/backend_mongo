@@ -5,9 +5,9 @@ const { generarJWT } = require('../helpers/jwt');
 
 const createUser = async (req = request, res = response) => {
     try {
-        const { 
-            email, 
-            password, 
+        const {
+            email,
+            password,
         } = req.body;
 
         let user = await User.findOne({ email });
@@ -71,8 +71,7 @@ const loginUsuario = async (req = request, res = response) => {
 
         res.status(201).json({
             ok: true,
-            user_id: user.id,
-            name: user.name,
+            user_data: user,
             token: token
         });
 
@@ -99,8 +98,24 @@ const renovarToken = async (req = request, res = response) => {
     });
 };
 
+const validateConection = async (req = request, res = response) => {
+    try {
+        res.status(200).json({
+            ok: true,
+            msg: 'coneccion con api exitosa'
+        })
+    } catch (error) {
+        console.log('error -->', error);
+        res.status(500).json({
+            ok: false,
+            msg: 'por favor comunicarse con el administrador'
+        });
+    };
+};
+
 module.exports = {
     createUser,
     loginUsuario,
-    renovarToken
+    renovarToken,
+    validateConection
 };
