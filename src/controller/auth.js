@@ -1,7 +1,7 @@
 const { request, response } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user.js');
-const { generarJWT } = require('../helpers/jwt');
+const { generateJWT } = require('../helpers/jwt');
 
 const createUser = async (req = request, res = response) => {
     try {
@@ -15,36 +15,35 @@ const createUser = async (req = request, res = response) => {
         if (user) {
             return res.status(400).json({
                 ok: false,
-                msg: 'El correo ya existe'
+                msg: 'Mail already exists'
             });
         };
 
         user = new User(req.body);
 
-        //encript password
+        //encrypt password
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(password, salt);
 
         await user.save();
 
-        //const token = await generarJWT(user.id, user.name);
+        //const token = await generateJWT(user.id, user.name);
 
         res.status(201).json({
             ok: true,
             user_id: user.id,
             name: user.name,
-            //token: token
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'por favor comunicarse con el administrador'
+            msg: 'Please contact the administrator'
         });
     };
 };
 
-const loginUsuario = async (req = request, res = response) => {
+const loginUser = async (req = request, res = response) => {
     try {
         const { email, password } = req.body;
 
@@ -53,7 +52,7 @@ const loginUsuario = async (req = request, res = response) => {
         if (!user) {
             return res.status(400).json({
                 ok: false,
-                msg: 'El usuario no existe'
+                msg: 'The user does not exist'
             });
         };
 
@@ -63,11 +62,15 @@ const loginUsuario = async (req = request, res = response) => {
         if (!validPassword) {
             return res.status(400).json({
                 ok: false,
-                msg: 'contraseña incorrecta'
+                msg: 'Password incorrect'
             })
         };
 
-        const token = await generarJWT(user.id, user.name);
+        const token = await generateJWT(user.id, user.name);
+
+        user.session = true;
+
+        await user.save()
 
         res.status(201).json({
             ok: true,
@@ -79,16 +82,47 @@ const loginUsuario = async (req = request, res = response) => {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'por favor comunicarse con el administrador'
+            msg: 'Please contact the administrator'
         });
     };
 };
 
-const renovarToken = async (req = request, res = response) => {
+const logOutUser = async (req = request, res = response) => {
+    try {
+        const { user_id } = req.body;
+
+        let user = await User.findOne({ user_id });
+
+        if (!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'The user does not exist'
+            });
+        };
+
+        user.session = false;
+
+        await user.save();
+
+        res.status(201).json({
+            ok: true,
+            user_data: user
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Please contact the administrator'
+        });
+    }
+}
+
+const refreshToken = async (req = request, res = response) => {
 
     const { user_id, name } = req;
 
-    const token = await generarJWT(user_id, name);
+    const token = await generateJWT(user_id, name);
 
     res.status(201).json({
         ok: true,
@@ -98,7 +132,7 @@ const renovarToken = async (req = request, res = response) => {
     });
 };
 
-const validateConection = async (req = request, res = response) => {
+const validateConnection = async (req = request, res = response) => {
     try {
         res.status(200).json({
             ok: true,
@@ -115,7 +149,8 @@ const validateConection = async (req = request, res = response) => {
 
 module.exports = {
     createUser,
-    loginUsuario,
-    renovarToken,
-    validateConection
+    loginUser,
+    logOutUser,
+    refreshToken,
+    validateConnection
 };

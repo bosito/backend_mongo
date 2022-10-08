@@ -18,6 +18,10 @@ const user_schema = Schema({
         type: String,
         default: ''
     },
+    session: {
+        type: Boolean,
+        default: false
+    },
     type_user: {
         type: Number,
         default: 0

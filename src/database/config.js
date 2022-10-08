@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const addConection = async () => {
+const addConnection = async () => {
     try {
         await mongoose.connect(process.env.DB_CONECTION)
         console.log('contect BD');
@@ -9,4 +9,4 @@ const addConection = async () => {
     };
 };
 
-module.exports = { addConection }
+module.exports = { addConnection }

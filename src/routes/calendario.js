@@ -10,11 +10,11 @@ const {
     actualizarEvento,
     eliminarEvento
 } = require('../controller/calendar.eventos');
-const { validarJWT } = require('../middlewares/validar-jwt');
+const { validateJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
-router.use(validarJWT)
+router.use(validateJWT)
 
 router.get('/', getEventos);
 
